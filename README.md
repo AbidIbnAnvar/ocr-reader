@@ -35,10 +35,10 @@ The backend uses PostgreSQL as its database.
 If you already have Docker installed, run:
 
 ```
-docker run --name expense-db \
+docker run --name postgres \
   -e POSTGRES_USER=postgres \
-  -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=expenses \
+  -e POSTGRES_PASSWORD=password \
+  -e POSTGRES_DB=postgres \
   -p 5432:5432 \
   -d postgres
 ```
@@ -51,6 +51,7 @@ Navigate into the backend directory and start the Spring Boot server:
 cd backend/
 mvn spring-boot:run
 ```
+---
 
 ### 5. Run the Frontend (Angular)
 

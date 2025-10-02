@@ -14,30 +14,11 @@ import com.abid.ocr.exception.ReceiptProcessingException;
 public class ReceiptProcessingService {
 
   private static final Logger logger = LoggerFactory.getLogger(ReceiptProcessingService.class);
-  // private final ImageService imageService;
-  // private final OcrService ocrService;
-  // private final TextParserService textParserService;
-
   @Value("${openrouter.api-key}")
   private String apiKey;
 
-  // public ReceiptProcessingService(ImageService imageService, OcrService
-  // ocrService,
-  // TextParserService textParserService) {
-  // this.imageService = imageService;
-  // this.ocrService = ocrService;
-  // this.textParserService = textParserService;
-  // }
-
   public ReceiptDto processReceipt(ImageRequest request) throws ReceiptProcessingException {
     try {
-      // // Step 1: Image preprocessing
-      // BufferedImage processedImage = imageService.preprocessImage(file);
-      // // Step 2: OCR extraction
-      // String extractedText = ocrService.extractText(processedImage);
-      // System.out.println(extractedText);
-      // // Step 3: Text parsing
-      // return textParserService.parseReceiptText(extractedText);
       String imageUrl = request.getImageUrl();
       OpenRouterConfig config = new OpenRouterConfig();
       if (apiKey == null || apiKey.isEmpty()) {
