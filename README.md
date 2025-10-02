@@ -51,6 +51,7 @@ Navigate into the backend directory and start the Spring Boot server:
 cd backend/
 mvn spring-boot:run
 ```
+---
 
 ### 5. Run the Frontend (Angular)
 
