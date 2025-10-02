@@ -58,5 +58,5 @@ Navigate into the frontend directory and start the Angular dev server:
 ```
 cd frontend/
 ng serve
-``
+```
 
