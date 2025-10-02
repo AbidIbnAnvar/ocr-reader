@@ -1,0 +1,67 @@
+<div class="overflow-x-auto rounded-lg shadow">
+  @if (dataSource.data.length === 0) {
+    <div class="p-8 text-center text-gray-500">
+      No receipts found. Upload your first receipt to get started.
+    </div>
+  } @else {
+    <table mat-table [dataSource]="dataSource" class="w-full">
+      <!-- Date Column -->
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let receipt">
+          {{ receipt.date | date: "mediumDate" }}
+        </td>
+      </ng-container>
+
+      <!-- Items Column -->
+      <ng-container matColumnDef="items">
+        <th mat-header-cell *matHeaderCellDef>Items</th>
+        <td mat-cell *matCellDef="let receipt">
+          <div class="flex flex-wrap gap-1 my-2">
+            <span
+              *ngFor="let item of receipt.items"
+              class="bg-indigo-100 text-indigo-600 px-2 py-1 rounded text-sm"
+            >
+              {{ item.name }} (x{{ item.quantity }})
+            </span>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Total Column -->
+      <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef>Total</th>
+        <td mat-cell *matCellDef="let receipt">
+          {{ receipt.total | currency: receipt.currencyCode }}
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="w-24">Actions</th>
+        <td mat-cell *matCellDef="let receipt" class="text-center">
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="editReceipt(receipt)">
+              <mat-icon>edit</mat-icon>
+              <span>Edit</span>
+            </button>
+            <button mat-menu-item (click)="deleteReceipt(receipt.id)">
+              <mat-icon>delete</mat-icon>
+              <span>Delete</span>
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="hover:bg-gray-50"
+      ></tr>
+    </table>
+  }
+</div>

@@ -1,0 +1,50 @@
+<nav class="bg-white shadow-md">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center">
+                <a routerLink="/dashboard" class="text-xl font-bold text-indigo-600">
+                    ExpenseTracker
+                </a>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-4">
+                <a routerLink="/dashboard" routerLinkActive="text-indigo-600 font-medium">
+                    Dashboard
+                </a>
+                <a routerLink="/receipts" routerLinkActive="text-indigo-600 font-medium">
+                    Receipts
+                </a>
+                <a routerLink="/analytics" routerLinkActive="text-indigo-600 font-medium">
+                    Analytics
+                </a>
+                <a routerLink="/settings" routerLinkActive="text-indigo-600 font-medium">
+                    Settings
+                </a>
+            </div>
+
+            <div class="flex items-center">
+                <div class="mr-4">
+                    <app-theme-toggle></app-theme-toggle>
+                </div>
+                <div class="relative">
+                    <button class="flex items-center">
+                        <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                            {{ userInitials }}
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="goToProfile()">
+        <mat-icon>person</mat-icon>
+        Profile
+    </button>
+    <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Logout
+    </button>
+</mat-menu> -->

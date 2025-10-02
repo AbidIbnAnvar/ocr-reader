@@ -1,0 +1,112 @@
+<div class="max-h-screen overflow-y-auto p-6">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">
+        {{ data.id ? 'Edit Receipt' : 'Add Receipt' }}
+    </h2>
+
+    <div class="space-y-6">
+        <form [formGroup]="receiptForm" class="space-y-6">
+
+            <!-- Subtotal / Tax / Total -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="space-y-1">
+                    <label for="subtotal" class="font-medium">Subtotal</label>
+                    <input hlmInput id="subtotal" type="number" formControlName="subtotal" step="0.01" min="0"
+                        class="w-full" />
+                </div>
+
+                <div class="space-y-1">
+                    <label for="tax" class="font-medium">Tax</label>
+                    <input hlmInput id="tax" type="number" formControlName="tax" step="0.01" min="0" class="w-full" />
+                </div>
+
+                <div class="space-y-1">
+                    <label for="total" class="font-medium">Total</label>
+                    <input hlmInput id="total" type="number" formControlName="total" step="0.01" min="0"
+                        class="w-full" />
+                </div>
+            </div>
+
+            <!-- Currency -->
+            <div class="space-y-1">
+                <div class="flex justify-between items-center">
+                    <label for="currency" class="font-medium">Currency</label>
+                    <brn-select id="currency" formControlName="currencyCode" class="inline-block"
+                        placeholder="Select currency">
+                        <hlm-select-trigger class="w-56">
+                            <hlm-select-value />
+                        </hlm-select-trigger>
+                        <hlm-select-content>
+                            @for (currency of ['USD', 'EUR', 'GBP', 'JPY', 'CAD']; track $index) {
+                            <hlm-option [value]="currency">{{currency}}</hlm-option>
+                            }
+                        </hlm-select-content>
+                    </brn-select>
+                </div>
+            </div>
+
+            <!-- Date -->
+            <div class="space-y-1">
+                <div class="flex justify-between items-center">
+                    <label for="date" class="font-medium">Date</label>
+
+                    <hlm-date-picker formControlName="date" [max]="maxDate">
+                        <span>Pick a date</span>
+                    </hlm-date-picker>
+
+                </div>
+            </div>
+
+            <!-- Items -->
+            <div>
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-lg font-semibold text-gray-700">Items</h3>
+                    <button hlmBtn variant="default" size="icon" type="button" (click)="addItem()"
+                        aria-label="Add Item">
+                        <ng-icon name="lucidePlus"></ng-icon>
+                    </button>
+                </div>
+
+                <div formArrayName="items" class="space-y-5">
+                    <div *ngFor="let item of items.controls; let i = index" [formGroupName]="i"
+                        class="p-4 rounded-xl border border-gray-300 shadow-sm bg-gray-50">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="space-y-1">
+                                <label class="font-medium">Name</label>
+                                <input hlmInput type="text" formControlName="name" class="w-full" />
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="font-medium">Price</label>
+                                <input hlmInput type="number" formControlName="price" step="0.01" min="0"
+                                    class="w-full" />
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="font-medium">Quantity</label>
+                                <input hlmInput type="number" formControlName="quantity" min="1" class="w-full" />
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end mt-3 text-red-700">
+                            <button hlmBtn variant="ghost" size="icon" type="button" (click)="removeItem(i)"
+                                aria-label="Delete Item">
+                                <ng-icon name="lucideTrash2" class="icon-red"></ng-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end gap-3 mt-6">
+        <button hlmBtn variant="outline" type="button" (click)="onCancel()" class="rounded-full px-6">
+            Cancel
+        </button>
+        <button hlmBtn variant="default" type="submit" (click)="onSave()" [disabled]="receiptForm.invalid"
+            class="rounded-full px-6">
+            Save
+        </button>
+    </div>
+</div>

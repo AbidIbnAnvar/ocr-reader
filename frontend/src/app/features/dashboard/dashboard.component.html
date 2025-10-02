@@ -1,0 +1,48 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between mb-6">
+    <h1 class="text-2xl font-bold">Dashboard</h1>
+    <!-- <button class=" flex items-center p-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition gap-2"
+      routerLink="/auth/login">
+      <mat-icon class="icon-size">logout</mat-icon>
+      <p>Logout</p>
+    </button> -->
+    <button hlmBtn (click)="logout()" variant="destructive" class="flex gap-2">
+      <mat-icon class="icon-size">logout</mat-icon>
+      Logout
+    </button>
+  </div>
+
+  <app-dashboard-summary></app-dashboard-summary>
+
+  <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2">
+      <app-recent-receipts></app-recent-receipts>
+    </div>
+    <div>
+      <div class="bg-white rounded-xl shadow p-6">
+        <h3 class="text-xl font-bold text-indigo-900 mb-4">Quick Actions</h3>
+        <div class="space-y-3">
+          <button
+            class="w-full flex items-center p-3 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition"
+            routerLink="/receipts">
+            <mat-icon class="mr-2">receipt</mat-icon>
+            My Receipts
+          </button>
+          <!-- <button
+            class="w-full flex items-center p-3 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition"
+            routerLink="/analytics"
+          >
+            <mat-icon class="mr-2">analytics</mat-icon>
+            View Analytics
+          </button> -->
+          <!-- <button
+            class="w-full flex items-center p-3 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition"
+            routerLink="/settings">
+            <mat-icon class="mr-2">settings</mat-icon>
+            Account Settings
+          </button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

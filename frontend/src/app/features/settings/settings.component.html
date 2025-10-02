@@ -1,0 +1,249 @@
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <mat-card class="overflow-hidden">
+        <div class="flex gap-4 bg-indigo-600 text-white px-6 py-4">
+            <div class="flex justify-between items-center">
+                <button
+                    class=" flex items-center p-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition gap-2"
+                    routerLink="/dashboard">
+                    <mat-icon class="back-arrow-size">arrow_back_ios_new</mat-icon>
+                </button>
+            </div>
+            <h1 class="text-2xl font-medium">Account Settings</h1>
+        </div>
+
+        <mat-tab-group animationDuration="300ms" class="p-4">
+            <!-- Profile Tab -->
+            <mat-tab label="Profile">
+                <div class="p-4">
+                    <h2 class="text-xl font-medium mb-6">Personal Information</h2>
+
+                    <form [formGroup]="profileForm" class="space-y-4">
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Username</mat-label>
+                            <input matInput formControlName="username">
+                            <mat-icon matSuffix>person</mat-icon>
+                            @if (profileForm.get('username')?.hasError('required')) {
+                            <mat-error>
+                                Username is required
+                            </mat-error>
+                            }
+                            @if (profileForm.get('username')?.hasError('minlength')) {
+                            <mat-error>
+                                Username must be at least 3 characters
+                            </mat-error>
+                            }
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Email</mat-label>
+                            <input matInput formControlName="email" type="email">
+                            <mat-icon matSuffix>email</mat-icon>
+                            @if (profileForm.get('email')?.hasError('required')) {
+                            <mat-error>
+                                Email is required
+                            </mat-error>
+                            }
+                            @if (profileForm.get('email')?.hasError('email')) {
+                            <mat-error>
+                                Please enter a valid email
+                            </mat-error>
+                            }
+                        </mat-form-field>
+
+                        <div class="flex justify-end pt-4">
+                            <button mat-raised-button color="primary" [disabled]="profileForm.invalid || isLoading"
+                                (click)="updateProfile()" class="flex items-center">
+                                @if (isLoading) {
+                                <mat-spinner diameter="20" class="mr-2"></mat-spinner>
+                                }
+                                Update Profile
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </mat-tab>
+
+            <!-- Password Tab -->
+            <mat-tab label="Password">
+                <div class="p-4">
+                    <h2 class="text-xl font-medium mb-6">Change Password</h2>
+
+                    <form [formGroup]="passwordForm" class="space-y-4">
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Current Password</mat-label>
+                            <input matInput [type]="showPassword ? 'text' : 'password'"
+                                formControlName="currentPassword">
+                            <button mat-icon-button matSuffix (click)="togglePasswordVisibility('password')"
+                                [attr.aria-label]="'Toggle password visibility'">
+                                <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                            </button>
+                            @if (passwordForm.get('currentPassword')?.hasError('required')) {
+                            <mat-error>
+                                Current password is required
+                            </mat-error>
+                            }
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>New Password</mat-label>
+                            <input matInput [type]="showNewPassword ? 'text' : 'password'"
+                                formControlName="newPassword">
+                            <button mat-icon-button matSuffix (click)="togglePasswordVisibility('newPassword')"
+                                [attr.aria-label]="'Toggle password visibility'">
+                                <mat-icon>{{ showNewPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                            </button>
+                            <mat-hint>
+                                Must contain at least 8 characters with uppercase, lowercase, number, and special
+                                character
+                            </mat-hint>
+                            @if (passwordForm.get('newPassword')?.hasError('required')) {
+                            <mat-error>
+                                New password is required
+                            </mat-error>
+                            }
+                            @if (passwordForm.get('newPassword')?.hasError('pattern')) {
+                            <mat-error>
+                                Password must meet complexity requirements
+                            </mat-error>
+                            }
+                        </mat-form-field>
+
+                        @if (passwordForm.get('newPassword')?.value) {
+                        <div class="flex items-center mb-4">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mr-3">
+                                <div class="h-2.5 rounded-full" [ngClass]="{
+                      'bg-red-500 w-1/3': getPasswordStrength(passwordForm.get('newPassword')?.value) === 'weak',
+                      'bg-yellow-500 w-2/3': getPasswordStrength(passwordForm.get('newPassword')?.value) === 'medium',
+                      'bg-green-500 w-full': getPasswordStrength(passwordForm.get('newPassword')?.value) === 'strong'
+                    }"></div>
+                            </div>
+                            <span class="text-sm font-medium">
+                                {{ getPasswordStrength(passwordForm.get('newPassword')?.value) | titlecase }}
+                            </span>
+                        </div>
+                        }
+
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Confirm New Password</mat-label>
+                            <input matInput [type]="showConfirmPassword ? 'text' : 'password'"
+                                formControlName="confirmPassword">
+                            <button mat-icon-button matSuffix (click)="togglePasswordVisibility('confirmPassword')"
+                                [attr.aria-label]="'Toggle password visibility'">
+                                <mat-icon>{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                            </button>
+                            @if (passwordForm.get('confirmPassword')?.hasError('required')) {
+                            <mat-error>
+                                Please confirm your new password
+                            </mat-error>
+                            }
+                            @if (passwordForm.errors?.['passwordMismatch']) {
+                            <mat-error>
+                                Passwords do not match
+                            </mat-error>
+                            }
+                        </mat-form-field>
+
+                        <div class="flex justify-end pt-4">
+                            <button mat-raised-button color="primary" [disabled]="passwordForm.invalid || isLoading"
+                                (click)="changePassword()" class="flex items-center">
+                                @if (isLoading) {
+                                <mat-spinner diameter="20" class="mr-2"></mat-spinner>
+                                }
+                                Change Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </mat-tab>
+
+            <!-- Display Tab -->
+            <mat-tab label="Display">
+                <div class="p-4">
+                    <h2 class="text-xl font-medium mb-6">Display Preferences</h2>
+
+                    <form [formGroup]="displayForm" class="space-y-6">
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <h3 class="font-medium">Dark Mode</h3>
+                                <p class="text-gray-600 text-sm">Switch between light and dark themes</p>
+                            </div>
+                            <app-theme-toggle></app-theme-toggle>
+                        </div>
+
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Currency</mat-label>
+                            <mat-select formControlName="currency">
+                                @for (currency of currencies; track currency.code) {
+                                <mat-option [value]="currency.code">
+                                    {{ currency.name }} {{ currency.code}}
+                                </mat-option>
+                                }
+                            </mat-select>
+                            <mat-icon matSuffix>attach_money</mat-icon>
+                        </mat-form-field>
+
+                        <div class="flex justify-end pt-4">
+                            <button mat-raised-button color="primary" (click)="displayForm.markAsPristine()"
+                                [disabled]="!displayForm.dirty">
+                                Save Preferences
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </mat-tab>
+
+            <!-- Account Tab -->
+            <mat-tab label="Account">
+                <div class="p-4">
+                    <h2 class="text-xl font-medium mb-6">Account Management</h2>
+
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
+                        <div class="flex items-start">
+                            <mat-icon class="text-red-500 mr-3">warning</mat-icon>
+                            <div>
+                                <h3 class="font-medium text-red-800">Delete Account</h3>
+                                <p class="text-red-700 text-sm mt-1">
+                                    This action is permanent and cannot be undone. All your data including receipts,
+                                    analytics, and settings will be permanently deleted.
+                                </p>
+                            </div>
+                        </div>
+
+                        <form [formGroup]="deleteAccountForm" class="mt-4 space-y-4">
+                            <div class="flex items-start">
+                                <mat-checkbox formControlName="confirm" color="warn" class="mr-2"></mat-checkbox>
+                                <label class="text-sm text-gray-700">
+                                    I understand that this action is irreversible and I want to permanently delete my
+                                    account.
+                                </label>
+                            </div>
+
+                            <mat-form-field appearance="outline" class="w-full">
+                                <mat-label>Confirm Password</mat-label>
+                                <input matInput type="password" formControlName="password"
+                                    placeholder="Enter your password to confirm">
+                                <mat-icon matSuffix>lock</mat-icon>
+                                @if (deleteAccountForm.get('password')?.hasError('required')) {
+                                <mat-error>
+                                    Password is required
+                                </mat-error>
+                                }
+                            </mat-form-field>
+
+                            <div class="flex justify-end">
+                                <button mat-raised-button color="warn"
+                                    [disabled]="deleteAccountForm.invalid || isDeleting" (click)="deleteAccount()"
+                                    class="flex items-center">
+                                    @if (isDeleting) {
+                                    <mat-spinner diameter="20" class="mr-2"></mat-spinner>
+                                    }
+                                    Delete Account
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-card>
+</div>
