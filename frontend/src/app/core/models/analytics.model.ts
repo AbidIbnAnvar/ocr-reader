@@ -15,3 +15,9 @@ export interface AnalyticsData {
     amount: number;
   }[];
 }
+
+export interface AnalyticsDataPoint {
+  label: string;
+
+  amount: number;
+}

@@ -17,14 +17,14 @@
         <p class="text-3xl font-bold">{{ analyticsData?.receiptCount }}</p>
         }
     </div>
-    <!-- <div class="bg-white p-6 rounded-xl shadow">
+    <div class="bg-white p-6 rounded-xl shadow">
         <h3 class="text-lg font-medium text-gray-500 mb-2">Average per Receipt</h3>
         @if (isLoading) {
         <app-skeleton-loader width="100px" height="32px"></app-skeleton-loader>
         } @else {
         <p class="text-3xl font-bold">
-            {{ analyticsData?.monthlyAverage | currency: (userCurrency || 'USD') }}
+            {{ analyticsData?.totalSpending/(analyticsData?.receiptCount) | currency: (userCurrency || 'USD') }}
         </p>
         }
-    </div> -->
+    </div>
 </div>

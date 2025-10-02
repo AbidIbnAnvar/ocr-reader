@@ -36,7 +36,7 @@
                             <hlm-select-value />
                         </hlm-select-trigger>
                         <hlm-select-content>
-                            @for (currency of ['USD', 'EUR', 'GBP', 'JPY', 'CAD']; track $index) {
+                            @for (currency of ['INR', 'USD', 'EUR', 'GBP', 'JPY', 'CAD','AED']; track $index) {
                             <hlm-option [value]="currency">{{currency}}</hlm-option>
                             }
                         </hlm-select-content>

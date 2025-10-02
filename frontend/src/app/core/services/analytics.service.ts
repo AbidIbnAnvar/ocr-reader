@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environment/environment';
-import { AnalyticsData } from '../models/analytics.model';
+import { AnalyticsData, AnalyticsDataPoint } from '../models/analytics.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +20,12 @@ export class AnalyticsService {
       params: filters,
       responseType: 'blob'
     })
+  }
+
+  getTimeSeriesAnalytics(granularity: string, offset = 0): Observable<AnalyticsDataPoint[]> {
+    return this.http.get<AnalyticsDataPoint[]>(`${environment.apiUrl}/analytics/timeseries`, {
+      params: { granularity, offset: offset.toString() }
+    });
   }
 
 }

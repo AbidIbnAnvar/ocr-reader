@@ -1,6 +1,10 @@
 package com.abid.ocr.db.services;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -11,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.abid.ocr.db.dto.AnalyticsDataPoint;
 import com.abid.ocr.db.dto.CategoryBreakdown;
 import com.abid.ocr.db.models.Receipt;
 import com.abid.ocr.db.models.ReceiptItem;
@@ -147,6 +152,60 @@ public class ReceiptService {
 
     return distinctMonths == 0 ? 0.0 : totalSpending / distinctMonths;
 
+  }
+
+  public List<AnalyticsDataPoint> getAnalytics(UUID userId, String granularity, int offset) {
+    List<Receipt> receipts = receiptRepository.findAllByUserId(userId);
+    if (receipts.isEmpty())
+      return Collections.emptyList();
+
+    List<AnalyticsDataPoint> result = new ArrayList<>();
+
+    switch (granularity.toLowerCase()) {
+      case "year":
+        int currentYear = LocalDate.now().getYear() + offset;
+        for (int i = 4; i >= 0; i--) {
+          int year = currentYear - i;
+          double total = receipts.stream()
+              .filter(r -> r.getDate() != null && r.getDate().getYear() == year)
+              .mapToDouble(r -> r.getTotal() != null ? r.getTotal() : 0.0)
+              .sum();
+          result.add(new AnalyticsDataPoint(String.valueOf(year), total));
+        }
+        break;
+
+      case "month":
+        YearMonth currentMonth = YearMonth.now().plusMonths(offset);
+        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM yyyy");
+        for (int i = 5; i >= 0; i--) {
+          YearMonth ym = currentMonth.minusMonths(i);
+          double total = receipts.stream()
+              .filter(r -> r.getDate() != null &&
+                  YearMonth.from(r.getDate()).equals(ym))
+              .mapToDouble(r -> r.getTotal() != null ? r.getTotal() : 0.0)
+              .sum();
+          result.add(new AnalyticsDataPoint(ym.format(monthFormatter), total));
+        }
+        break;
+
+      case "day":
+        LocalDate currentDate = LocalDate.now().plusDays(offset);
+        DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        for (int i = 6; i >= 0; i--) {
+          LocalDate day = currentDate.minusDays(i);
+          double total = receipts.stream()
+              .filter(r -> r.getDate() != null && r.getDate().equals(day))
+              .mapToDouble(r -> r.getTotal() != null ? r.getTotal() : 0.0)
+              .sum();
+          result.add(new AnalyticsDataPoint(day.format(dayFormatter), total));
+        }
+        break;
+
+      default:
+        throw new IllegalArgumentException("Invalid granularity: " + granularity);
+    }
+
+    return result;
   }
 
 }

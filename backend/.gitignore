@@ -34,5 +34,6 @@ build/
 
 hs_err_pid8682.log
 
-resources/
-application.properties
+.env
+
+application-test.properties

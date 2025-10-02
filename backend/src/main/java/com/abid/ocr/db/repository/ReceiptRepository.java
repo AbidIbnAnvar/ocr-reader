@@ -40,4 +40,5 @@ public interface ReceiptRepository extends JpaRepository<Receipt, UUID> {
       """, nativeQuery = true)
   List<CategoryBreakdown> getCategoryBreakdownByUserId(@Param("userId") UUID userId);
 
+  
 }

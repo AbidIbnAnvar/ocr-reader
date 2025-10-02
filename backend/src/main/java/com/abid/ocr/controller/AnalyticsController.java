@@ -9,8 +9,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.abid.ocr.db.dto.AnalyticsDataPoint;
 import com.abid.ocr.db.dto.CategoryBreakdown;
 import com.abid.ocr.db.services.ReceiptService;
 import com.abid.ocr.db.services.UserService;
@@ -49,6 +51,23 @@ public class AnalyticsController {
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
           .body(new ErrorResponse("Error getting analytics summary:" + e.getMessage()));
+    }
+  }
+
+  @GetMapping("/timeseries")
+  public ResponseEntity<?> getAnalyticsTimeseries(
+      @RequestParam String granularity,
+      @RequestParam(defaultValue = "0") int offset) {
+    try {
+      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+      String email = auth.getName();
+      UUID userId = userService.getUserIdFromEmail(email);
+
+      List<AnalyticsDataPoint> data = receiptService.getAnalytics(userId, granularity, offset);
+      return ResponseEntity.ok(data);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body(new ErrorResponse("Error fetching analytics timeseries: " + e.getMessage()));
     }
   }
 

@@ -5,77 +5,64 @@
 
   <div class="p-4">
     @if (receipts$ | async; as receipts) {
-      @if (receipts.length > 0) {
-        <div class="space-y-4">
-          @for (receipt of receipts | slice: 0 : 5; track receipt.id) {
-            <div
-              class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition"
-            >
-              <div class="flex justify-between items-start">
-                <div>
-                  <div class="text-sm text-gray-500">
-                    {{ receipt.date | date: "mediumDate" }}
-                  </div>
-                  <div class="font-medium text-lg mt-1">
-                    {{ receipt.total | currency: receipt.currencyCode }}
-                  </div>
-                  <div class="text-sm text-gray-600 mt-1">
-                    {{ receipt.items.length }} items
-                  </div>
-                </div>
-
-                <div>
-                  <button
-                    mat-icon-button
-                    [routerLink]="['/receipts']"
-                    [queryParams]="{ receiptId: receipt.id }"
-                    matTooltip="View Details"
-                  >
-                    <mat-icon>chevron_right</mat-icon>
-                  </button>
-                </div>
-              </div>
-
-              <div class="mt-3 flex flex-wrap gap-1">
-                @for (item of receipt.items | slice: 0 : 3; track $index) {
-                  <span
-                    class="bg-indigo-100 text-indigo-600 px-2 py-1 rounded text-xs"
-                  >
-                    {{ item.name }} (x{{ item.quantity }})
-                  </span>
-                }
-                @if (receipt.items.length > 3) {
-                  <span
-                    class="bg-indigo-100 text-indigo-600 px-2 py-1 rounded text-xs"
-                  >
-                    +{{ receipt.items.length - 3 }} more
-                  </span>
-                }
-              </div>
+    @if (receipts.length > 0) {
+    <div class="space-y-4">
+      @for (receipt of receipts | slice: 0 : 2; track receipt.id) {
+      <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition">
+        <div class="flex justify-between items-start">
+          <div>
+            <div class="text-sm text-gray-500">
+              {{ receipt.date | date: "mediumDate" }}
             </div>
+            <div class="font-medium text-lg mt-1">
+              {{ receipt.total | currency: receipt.currencyCode }}
+            </div>
+            <div class="text-sm text-gray-600 mt-1">
+              {{ receipt.items.length }} items
+            </div>
+          </div>
+
+          <div>
+            <button mat-icon-button [routerLink]="['/receipts']" [queryParams]="{ receiptId: receipt.id }"
+              matTooltip="View Details">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-3 flex flex-wrap gap-1">
+          @for (item of receipt.items | slice: 0 : 3; track $index) {
+          <span class="bg-indigo-100 text-indigo-600 px-2 py-1 rounded text-xs">
+            {{ item.name }} (x{{ item.quantity }})
+          </span>
+          }
+          @if (receipt.items.length > 3) {
+          <span class="bg-indigo-100 text-indigo-600 px-2 py-1 rounded text-xs">
+            +{{ receipt.items.length - 3 }} more
+          </span>
           }
         </div>
-
-        <div class="mt-6 text-center">
-          <a
-            routerLink="/receipts"
-            class="text-indigo-600 hover:underline font-medium flex items-center justify-center"
-          >
-            View all receipts
-            <mat-icon class="ml-1">arrow_forward</mat-icon>
-          </a>
-        </div>
-      } @else {
-        <div class="text-center py-12 text-gray-500">
-          <mat-icon class="text-4xl mb-4 text-gray-300">receipt</mat-icon>
-          <p>No receipts found</p>
-          <p class="text-sm mt-2">Upload your first receipt to get started</p>
-        </div>
-      }
-    } @else {
-      <div class="flex justify-center py-12">
-        <mat-spinner diameter="40"></mat-spinner>
       </div>
+      }
+    </div>
+
+    <div class="mt-6 text-center">
+      <a routerLink="/receipts" class="text-indigo-600 hover:underline font-medium flex items-center justify-center">
+        View all receipts
+        <mat-icon class="ml-1">arrow_forward</mat-icon>
+      </a>
+    </div>
+    } @else {
+    <div class="text-center py-12 text-gray-500">
+      <mat-icon class="text-4xl mb-4 text-gray-300">receipt</mat-icon>
+      <p>No receipts found</p>
+      <p class="text-sm mt-2">Upload your first receipt to get started</p>
+    </div>
+    }
+    } @else {
+    <div class="flex justify-center py-12">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
     }
   </div>
 </mat-card>

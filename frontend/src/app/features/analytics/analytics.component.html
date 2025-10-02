@@ -1,135 +1,39 @@
-<div class="container mx-auto px-4 py-8">
+<div class="container h-screen mx-auto px-4 py-8">
   <div class="flex justify-between items-center mb-6">
-    <button
-      class="flex items-center p-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition gap-2"
-      routerLink="/dashboard"
-    >
+    <button class="flex items-center p-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition gap-2"
+      routerLink="/dashboard">
       <mat-icon class="back-arrow-size">arrow_back_ios_new</mat-icon>
       <p>Back to Dashboard</p>
     </button>
   </div>
-
-  <h1 class="text-2xl font-bold mb-6">Analytics</h1>
-
-  <mat-card class="mb-6">
+  <mat-card class="mb-2">
     <mat-card-header>
-      <mat-card-title>Filters</mat-card-title>
+      <mat-card-title>Spending Over Time</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <form
-        [formGroup]="filterForm"
-        class="grid grid-cols-1 md:grid-cols-3 gap-4"
-      >
-        <mat-form-field>
-          <mat-label>Start Date</mat-label>
-          <input
-            matInput
-            [matDatepicker]="startPicker"
-            formControlName="startDate"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="startPicker"
-          ></mat-datepicker-toggle>
-          <mat-datepicker #startPicker></mat-datepicker>
-        </mat-form-field>
+      <div class="flex justify-between items-center mb-4">
+        <form [formGroup]="filterForm">
+          <app-granularity-selector [selected]="filterForm.get('granularity')!.value??'day'"
+            (selectedChange)="onGranularityChange($event)"></app-granularity-selector>
+        </form>
+        <div class="flex gap-2">
+          <button class="px-4 py-1 rounded-md bg-indigo-600 text-white flex justify-between items-center"
+            mat-icon-button (click)="changeOffset(-1)">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+          <button
+            class="px-4 py-1 rounded-md bg-indigo-600 text-white flex justify-between items-center disabled:bg-indigo-200"
+            mat-icon-button [disabled]="offset==0" (click)="changeOffset(1)">
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </div>
 
-        <mat-form-field>
-          <mat-label>End Date</mat-label>
-          <input
-            matInput
-            [matDatepicker]="endPicker"
-            formControlName="endDate"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="endPicker"
-          ></mat-datepicker-toggle>
-          <mat-datepicker #endPicker></mat-datepicker>
-        </mat-form-field>
+      <div class="h-[700px] w-full">
+        <canvas id="myChart" class="h-[600px]"></canvas>
+      </div>
 
-        <mat-form-field>
-          <mat-label>Category</mat-label>
-          <input matInput formControlName="category" />
-        </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Min Amount</mat-label>
-          <input matInput type="number" formControlName="minAmount" />
-        </mat-form-field>
-
-        <mat-form-field>
-          <mat-label>Max Amount</mat-label>
-          <input matInput type="number" formControlName="maxAmount" />
-        </mat-form-field>
-      </form>
     </mat-card-content>
-    <mat-card-actions class="flex justify-end gap-2">
-      <button mat-stroked-button (click)="resetFilters()">Reset</button>
-      <button mat-raised-button color="primary" (click)="loadAnalytics()">
-        Apply
-      </button>
-    </mat-card-actions>
   </mat-card>
-
-  @if (isLoading) {
-    <div class="text-center py-12">
-      <mat-spinner diameter="50" class="mx-auto"></mat-spinner>
-    </div>
-  } @else if (analyticsData) {
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Summary</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="grid grid-cols-3 gap-4">
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
-              <div class="text-2xl font-bold">
-                {{ analyticsData.totalSpent | currency: "USD" }}
-              </div>
-              <div class="text-gray-600">Total Spent</div>
-            </div>
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
-              <div class="text-2xl font-bold">
-                {{ analyticsData.averagePerReceipt | currency: "USD" }}
-              </div>
-              <div class="text-gray-600">Avg/Receipt</div>
-            </div>
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
-              <div class="text-2xl font-bold">
-                {{ analyticsData.receiptsCount }}
-              </div>
-              <div class="text-gray-600">Receipts</div>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Spending Over Time</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <canvas
-            baseChart
-            [data]="dailyChartData"
-            type="line"
-            [options]="{ responsive: true }"
-          >
-          </canvas>
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <div class="text-right mb-6">
-      <button mat-raised-button color="primary" (click)="exportCsv()">
-        <mat-icon class="mr-2">download</mat-icon>
-        Export to CSV
-      </button>
-    </div>
-  }
 </div>
-

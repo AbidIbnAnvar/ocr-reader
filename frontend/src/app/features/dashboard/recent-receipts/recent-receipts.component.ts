@@ -28,6 +28,7 @@ export class RecentReceiptsComponent {
   receipts$!: Observable<ReceiptResponse[]>;
 
   constructor(private receiptService: ReceiptService) {
+    this.receiptService.loadReceipts();
     this.receipts$ = this.receiptService.receipts$;
   }
 
